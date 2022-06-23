@@ -63,3 +63,30 @@ document.querySelector('#deleteProfile').addEventListener('click', e => {
 		user.delete();
 	}
 });
+
+
+// POST (OBRAĐUJEMO POSTOVE KOJE KOR. OBJAVI)(funkcija)*********************
+
+
+document.querySelector('#postForm').addEventListener('submit', e => {
+	e.preventDefault();
+
+	async function createPost() {
+		let content = document.querySelector('#postContent').value;
+		document.querySelector('#postContent').value = '';
+		let post = new Post();
+		post.post_content = content;
+		post = await post.create();
+
+		let current_user = new User();
+		current_user = await current_user.get(session_id);
+
+		document.querySelector('#allPostsWrapper').innerHTML = `<div class = "single-post" data-post_id="${post.id}">
+																	<div class="post-content">${post.content}</div>
+                                                                </div>`;
+
+	}
+
+	createPost();
+	
+});

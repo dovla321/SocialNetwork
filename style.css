@@ -152,3 +152,18 @@ form ul li{
 	color: red;
 	padding: 5px 15px;
 }
+
+#allPostsWrapper .single-post{
+	background-color: #eeeeee;
+	padding: 15px;
+	margin-top: 15px;
+	color: #000;
+}
+
+
+#allPostsWrapper .single-post .post-content{
+	padding-bottom: 10px;
+	border-bottom: 1px solid black;
+	margin-bottom: 30px;
+	font-size: 22px;
+}

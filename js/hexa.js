@@ -126,7 +126,7 @@ document.querySelector('#postForm').addEventListener('submit', e => {
 	
 });
 
-async function getAllPosts() {
+async function getAllPosts() {   //S ovom funkcijom očitavamo ili ispisivamo sve postove********
 	let all_posts = new Post();
 	all_posts = await all_posts.getAllPosts();
 
@@ -138,6 +138,21 @@ async function getAllPosts() {
 
 			let user = new User();
 			user = await user.get(post.user_id);
+
+			let comments = new Comment();
+			comments = await comments.get(post.id);
+
+			let comments_html = '';
+			if(comments.length > 0){
+				comments.forEach(comment => {
+					comments_html += `<div class="single-comment">${comment.content}</div>`;
+				})
+			}
+
+
+
+
+
 
 			let html = document.querySelector('#allPostsWrapper').innerHTML;
 
@@ -172,6 +187,8 @@ async function getAllPosts() {
 	                                                                     	<input placeholder ="Napisi komentar..." type="text">
 	                                                                     	<button onclick="comentPostSubmit(event)">Comment</button>
 	                                                                     </form>
+
+	                                                                     ${comments_html}
 	                                                                </div>
                                                                 </div> 
 
@@ -184,18 +201,59 @@ async function getAllPosts() {
 
 getAllPosts();
 
-const comentPostSubmit = event => {
+
+// Funkcija za dugme "comment" (komentiraj)****************************************
+
+const comentPostSubmit = e => {
+e.preventDefault();
+
+let btn = e.target;
+btn.setAttribute('disabled', 'true');
+
+let main_post_el = btn.closest('.single-post');
+let post_id = main_post_el.getAttribute('data-post_id');
+
+let html = main_post_el.querySelector('.post-comments').innerHTML;
+
+let comment_value = main_post_el.querySelector('input').value;
+
+main_post_el.querySelector('.post-comments').innerHTML += `<div class="single-comment">${comment_value}</div>`;
+
+let comment = new Comment();  // kreiramo novi komentar
+comment.content = comment_value; // uzimamo vrijednost
+comment.user_id = session_id; // uzimamo usera trenutnog i njegov id
+comment.post_id = post_id; 
+comment.create();  // pozivamo funkciju create koja se nalazi u Comment.js
+}
+
+const removeMyPost = btn => {
+	let post_id = btn.closest('.single-post').getAttribute('data-post_id');
+
+	btn.closest('.single-post').remove();
+
+	let post = new Post();
+	post.delete(post_id);
+}
+
+const likePost = btn => {
+	let main_post_el = btn.closest('.single-post');
+	let post_id = btn.closest('.single-post').getAttribute('data-post_id');
+	let number_of_likes = parseInt(btn.querySelector('span').innerText);
+
+	btn.querySelector('span').innerText = number_of_likes + 1;
+	btn.setAttribute('disabled', 'true');
+
+	let post = new Post();
+	post.like(post_id, number_of_likes + 1);
+}
+
+const commentPost = btn => {
+	let main_post_el = btn.closest('.single-post');
+	let post_id = main_post_el.getAttribute('data-post_id');
+
+	main_post_el.querySelector('.post-comments').style.display = 'block';
+
 
 }
 
-const removeMyPost = el => {
 
-}
-
-const likePost = el => {
-
-}
-
-const commentPost = el => {
-
-}

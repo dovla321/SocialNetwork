@@ -1,4 +1,4 @@
-class Post {
+class Post {  
 	post_id = '';
 	post_content = '';
 	user_id = '';
@@ -29,5 +29,11 @@ class Post {
 
 		return data;
 
+	}
+
+	async getAllPosts() {
+		let response = await fetch(this.api_url + '/posts');
+		let data = await response.json();
+		return data;
 	}
 }
